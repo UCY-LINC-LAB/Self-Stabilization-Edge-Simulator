@@ -1,0 +1,215 @@
+root: results/small
+name: fail_iot
+random_seed:   1 # If zero it creates a random run.
+mode:
+  gui: false
+  steps: 60000 # How many steps should be executed (5 minutes). If omitted, interactive mode is started
+  progress_every: 1000 # How frequently should I log progress
+  statistics_every: 10000 # How frequently should output statistics
+  statistics_after: 10000  # When to start measuring
+  plots_every: 10000 # How frequently should output plots
+  logsEnabled: false #
+  trace:
+    links: false
+  logs:
+    - dsslib.components.selfstabilization.SSCloudModule
+    - dsslib.components.selfstabilization.SSCloudletModule
+    - dsslib.components.selfstabilization.SSCloudletLeaderModule
+    - dsslib.components.selfstabilization.SSIoTModule
+  trace_events:
+    - dsslib.events.Init
+    - dsslib.components.networking.NetworkModule$SendMsg
+    - dsslib.components.selfstabilization.SSIoTModule$CloudletModelMsg
+    - dsslib.components.selfstabilization.SSCloudModule$MsgFromCloudlet
+    - dsslib.components.selfstabilization.SSCloudModule$MsgFromIoT
+    - dsslib.components.networking.SharedRegisterModule$Write
+    - dsslib.components.networking.SharedRegisterModule$Read
+  statistics:
+    - network
+    - aggregateState
+    - selfStabilization
+
+
+processes:
+  # The cloud
+  cloud:
+    speed: 1f
+    modules:
+
+      - module: dsslib.components.networking.NetworkModule
+        implementation: dsslib.components.networking.NetworkComponent
+        params:
+          receiveBandwidth: 100
+          transmitBandwidth: 100
+
+      - module: dsslib.components.networking.SharedRegisterModule
+        implementation: dsslib.components.networking.SharedRegisterComponent
+
+      - module: dsslib.components.timers.SimpleTimerModule
+        implementation: dsslib.components.timers.SimpleTimer
+
+      - module: dsslib.components.timers.PeriodicTimerModule
+        implementation: dsslib.components.timers.PeriodicTimerComponent
+
+      - module: dsslib.components.healthcheck.HealthCheckModule
+        implementation: dsslib.components.healthcheck.HealthCheckComponent
+
+      - module: dsslib.components.selfstabilization.SSCloudModule
+        implementation: dsslib.components.selfstabilization.SSCloudComponent
+        params:
+          periodicity: 2000
+          checkPeriodForLeader: 6000
+          checkPeriodForCloudlets: 12000
+
+  cloudlets:
+    speed: 1f
+    link_to_other_cloudlets: links_10_500_400
+
+    zones:
+
+      - zone: central
+        count: 2
+        links:
+          cloudlets: links_10_500_400
+          cloud: links_100_500_400
+
+      - zone: north
+        count: 2
+        links:
+          cloudlets: links_10_500_400
+          cloud: links_100_500_400
+
+
+    modules:
+      - module: dsslib.components.networking.NetworkModule
+        implementation: dsslib.components.networking.NetworkComponent
+        params:
+          receiveBandwidth: 50
+          transmitBandwidth: 40
+
+      - module: dsslib.components.networking.SharedRegisterModule
+        implementation: dsslib.components.networking.SharedRegisterComponent
+
+      - module: dsslib.components.timers.SimpleTimerModule
+        implementation: dsslib.components.timers.SimpleTimer
+
+      - module: dsslib.components.timers.PeriodicTimerModule
+        implementation: dsslib.components.timers.PeriodicTimerComponent
+
+      - module: dsslib.components.healthcheck.HealthCheckModule
+        implementation: dsslib.components.healthcheck.HealthCheckComponent
+
+      - module: dsslib.components.selfstabilization.SSCloudletModule
+        implementation: dsslib.components.selfstabilization.SSCloudletComponent
+        params:
+          periodicity: 100
+
+      - module: dsslib.components.selfstabilization.SSCloudletLeaderModule
+        implementation: dsslib.components.selfstabilization.SSCloudletLeaderComponent
+        params:
+          periodicity: 100
+          healthCheckThreshold: 56
+
+  iots:
+    speed: 1f
+    zones:
+
+      - zone: central
+        count: 10
+        links:
+          cloudlets: links_20_1_1
+          cloud: links_250_1_1
+
+      - zone: north
+        count: 10
+        links:
+          cloudlets: links_20_1_1
+          cloud: links_250_1_1
+
+
+    modules:
+      - module: dsslib.components.networking.NetworkModule
+        implementation: dsslib.components.networking.NetworkComponent
+        params:
+          receiveBandwidth: 1
+          transmitBandwidth: 1
+
+      - module: dsslib.components.timers.SimpleTimerModule
+        implementation: dsslib.components.timers.SimpleTimer
+
+      - module: dsslib.components.timers.PeriodicTimerModule
+        implementation: dsslib.components.timers.PeriodicTimerComponent
+
+      - module: dsslib.components.selfstabilization.SSIoTModule
+        implementation: dsslib.components.selfstabilization.SSIoTComponent
+        params:
+          periodicity: 500
+          modelUpdatePeriodicity: 5000
+          timeout: 5000
+
+network:
+  ## The speed will be divided => 1/speed
+
+  # Cloudlets in the same zone
+  links_10_500_400:
+    speed:
+      type: gaussian
+      props:
+        mean: 10
+        sdev: 1
+    downstreamBandwidth: 500
+    upstreamBandwidth: 400
+
+  # Cloudlets in other zone
+  # Cloudlets to cloud
+  links_100_500_400:
+    speed:
+      type: gaussian
+      props:
+        mean: 100
+        sdev: 10
+    downstreamBandwidth: 500
+    upstreamBandwidth: 400
+
+  # IoT to cloud
+  links_250_1_1:
+    speed:
+      type: gaussian
+      props:
+        mean: 250
+        sdev: 25
+    downstreamBandwidth: 1
+    upstreamBandwidth: 1
+
+  # IoT to cloudlets
+  links_20_1_1:
+    speed:
+      type: gaussian
+      props:
+        mean: 20
+        sdev: 2
+    downstreamBandwidth: 1
+    upstreamBandwidth: 1
+
+# Specific to the algorithm
+properties:
+  guards: 2
+  aggregate: SUM
+  records: 24 # The number of records
+  recordSize: 64 # The size in bytes
+
+events:
+  # All processes will be enabled randomly in the first 10 seconds.
+  - at: 1
+    type: ENABLE_ALL_RANDOM
+    from: 1
+    to: 10000
+
+  - at: 10000
+    type: FAIL_LINKS_IOT_TO_CLOUDLET
+    regions:
+      - north
+      - central
+    count: 4
+    from: 0
+    to: 5000
