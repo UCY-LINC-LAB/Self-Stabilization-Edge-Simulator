@@ -29,7 +29,7 @@ the latency between two cloudlets in different area is ~100ms.
 * 20 iots. 10 located in the north area and 10 in the central area.
 
 The rest scenarios have the same setup, except that they describe different types of failure(e.g., fail cloudlets, fail leader, etc).
-For more information about the scenario description see Section (#Simulator-Model)
+For more information about the scenario description see Section [Simulator Model](#Simulator-Model)
 
 ### Simulator Model
 The input of the simulator is a yaml file. Below we provide a description of the properties a user must define.  
@@ -71,14 +71,14 @@ The scheduler is responsible for allocating execution steps to all processes.
 Each process has its own notion of time, depending on its speed. 
 In this simulator we assume that a single step is 1 millisecond.
 
-![image](https://github.com/UCY-LINC-LAB/Self-Stabilization-Edge-Simulator/blob/readme-updates/docs/scheduler.png)
+![image](https://github.com/UCY-LINC-LAB/Self-Stabilization-Edge-Simulator/blob/master/docs/scheduler.png)
 
 The simulated scenario contains processes. A process consists of a component stack. 
 The components are the software. Each process can be connected via links.
 In each step a process receives all the messages from its input buffer, executes the state automata of each module, and finally, 
 it sends the messages on its local output buffer. Component within the same process interact via events. 
 
-![image](https://github.com/UCY-LINC-LAB/Self-Stabilization-Edge-Simulator/blob/readme-updates/docs/overview.png)
+![image](https://github.com/UCY-LINC-LAB/Self-Stabilization-Edge-Simulator/blob/master/docs/overview.png)
 
 ## Reference
 TODO ...
