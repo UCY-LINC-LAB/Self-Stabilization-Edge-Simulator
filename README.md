@@ -71,11 +71,11 @@ This section allows the user to configure how many cloudlets and iot should be s
 |cloud.speed| Describe how fast the cloud is. A value of 1 is the maximum speed. A small value indicates a slower process.|
 |cloud.modules| A list of modules within the cloud. (see [module](#module))|
 |cloudlets.speed| Describe how fast the cloudlets are.|
-|cloudlets.link_to_other_cloudlets| A string id representing the type of network (see [Network](#network)
-|cloudlets.zones| A list of zones that cloudlets will be instantiated (see [zone](#zone)
+|cloudlets.link_to_other_cloudlets| A string id representing the type of network (see [Network](#network))|
+|cloudlets.zones| A list of zones that cloudlets will be instantiated (see [zone](#zone))|
 |cloudlets.modules| A list of modules within each cloudlet. (see [module](#module))|
 |iots.speed| Describe how fast the iots are.|
-|cloudlets.zones| A list of zones that iots will be instantiated (see [zone](#zone)
+|cloudlets.zones| A list of zones that iots will be instantiated (see [zone](#zone))|
 |cloudlets.modules| A list of modules within each iot. (see [module](#module))|
 
 #### zone
@@ -85,8 +85,8 @@ A zone describes an area in which processes are spawned and connected.
 |---|---|
 |zone| A unique name for the zone|
 |count| The number of processes that will be spawned|
-|links.cloudlets| A string id representing the type of network in which the processes will be connected with other cloudlets (see [Network](#network)
-|links.cloud| A string id representing the type of network in which the processes will be connected with the cloud (see [Network](#network)
+|links.cloudlets| A string id representing the type of network in which the processes will be connected with other cloudlets (see [Network](#network))|
+|links.cloud| A string id representing the type of network in which the processes will be connected with the cloud (see [Network](#network))|
 
 #### module
 A module is the interface of a well-defined algorithm. For example the NetworkModule is responsible for transmitting and
@@ -96,8 +96,8 @@ mapping can be defined.
 
 |Key|Description|
 |---|---|
-|module| The name of the interface module (e.g., dsslib.components.networking.NetworkModule). |
-|implementation| The name of the class that implements the aforementioned  module (e.g., dsslib.components.networking.NetworkComponent). |
+|module| The name of the interface module (e.g., *dsslib.components.networking.NetworkModule*). |
+|implementation| The name of the class that implements the aforementioned  module (e.g., *dsslib.components.networking.NetworkComponent*). |
 |params| A key-value map of parameters for the module |
 
 #### network
