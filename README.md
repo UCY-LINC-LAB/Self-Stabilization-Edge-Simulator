@@ -29,7 +29,7 @@ the latency between two cloudlets in different area is ~100ms.
 * 20 iots. 10 located in the north area and 10 in the central area.
 
 The rest scenarios have the same setup, except that they describe different types of failure(e.g., fail cloudlets, fail leader, etc).
-For more information about the scenario description see Section (#Simulator-Model)
+For more information about the scenario description and configuration see Section (#Simulator-Model)
 
 ### Simulator Model
 The input of the simulator is a yaml file. Below we provide a description of the properties a user must define.  
@@ -46,14 +46,32 @@ The input of the simulator is a yaml file. Below we provide a description of the
 |events| A list of events. See **events**|
 
 #### mode
+This part of the scenario defines the configuration of simulator. Each configuration key is explained in the following table:
+
 |Key|Description|
 |---|---|
 |gui| Enable/disable the graphical user interface|
 |steps| How many steps should be executed.|
 |progress_every| Report the simulator progress every X steps|
+|statistics_every| Report the monitored statistics progress every X steps|
+|statistics_after| Start collecting statistics after X steps|
+|plot_every| Plot the default graphs after X steps|
+|logsEnabled| Enable/disable the logs from each component|
+|trace.links| Enable/disable the logs from the links|
+|logs| A list of components to log. *e.g., dsslib.components.selfstabilization.SSIoTModule*|
+|trace_events| A list of events to trace. *e.g., dsslib.components.networking.NetworkModule$SendMsg*|
+|statistics| A list of statistics to monitor. Currently available: *network*, *aggregateState*, *selfStabilization*|
 
 #### processes
-TODO
+This section  
+
+|Key|Description|
+|---|---|
+|cloud.speed| Describe how fast the cloud is. A value of 1 is the maximum speed. A small value indicates a slower process.|
+|cloud.modules| A list of modules within the process.|
+|cloudlets.speed| Describe how fast the cloudlets are.|
+|cloudlets.link_to_other_cloudlets| A string id from section 
+|cloud.modules| A list of modules within the process.|
 
 #### network
 TODO
@@ -81,7 +99,8 @@ it sends the messages on its local output buffer. Component within the same proc
 ![image](https://github.com/UCY-LINC-LAB/Self-Stabilization-Edge-Simulator/blob/readme-updates/docs/overview.png)
 
 ## Reference
-TODO ...
+When using the framework please use the following reference to cite our work: 
+TBD
 
 ## Licence
 The framework is open-sourced under the Apache 2.0 License base. The codebase of the framework is maintained by the authors for academic research and is therefore provided "as is".
